@@ -1,7 +1,7 @@
 /**
  * 题目详情页
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -53,7 +53,6 @@ export default function ProblemDetailPage() {
   const [error, setError] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('python3');
   const [record, setRecord] = useState<ProblemRecord | null>(null);
-  const [showLockedHint, setShowLockedHint] = useState(false);
 
   useEffect(() => {
     if (identifier) {
@@ -98,11 +97,10 @@ export default function ProblemDetailPage() {
       const response = await problemsApi.getHints(identifier!, { site, locale });
       if (response.data.success) {
         setHints(response.data.data);
-        setShowLockedHint(false);
       }
     } catch (err: any) {
       if (err.response?.status === 403) {
-        setShowLockedHint(true);
+        setHints([]);
       }
     }
   };

@@ -2,6 +2,7 @@
  * API 客户端
  */
 import axios, { type AxiosInstance, type AxiosError } from 'axios';
+import { staticProblemsApi, staticRecordsApi } from './staticData';
 
 // 创建 axios 实例
 const apiClient: AxiosInstance = axios.create({
@@ -82,7 +83,7 @@ export const authApi = {
     apiClient.post('/auth/refresh', { refreshToken }),
 };
 
-export const problemsApi = {
+const liveProblemsApi = {
   getList: (params: {
     page?: number;
     limit?: number;
@@ -109,7 +110,7 @@ export const problemsApi = {
     apiClient.get('/problems/categories'),
 };
 
-export const recordsApi = {
+const liveRecordsApi = {
   getList: (params?: { status?: string }) =>
     apiClient.get('/records', { params }),
   
@@ -128,3 +129,8 @@ export const recordsApi = {
     notes?: string;
   }) => apiClient.post('/records', data),
 };
+
+const staticSite = import.meta.env.VITE_STATIC === '1';
+
+export const problemsApi = staticSite ? staticProblemsApi : liveProblemsApi;
+export const recordsApi = staticSite ? staticRecordsApi : liveRecordsApi;

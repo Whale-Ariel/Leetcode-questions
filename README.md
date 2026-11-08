@@ -37,7 +37,11 @@ leetcode.com 上这份快照里的 4101 个 slug 都在库中。中文题来自 
 
 ## 用网页浏览
 
-网站读的是同一份 `db/question-bank.sqlite`，只读，不会改题目数据。注册、登录和做题记录写在 `server/data/users.sqlite`。
+公开页面：https://yumengwang63-eng.github.io/Leetcode-questions/
+
+这个地址由 GitHub Pages 提供，只包含静态页面。题目数据在构建时从 `db/question-bank.sqlite` 导出，页面直接读取这些 JSON。做题记录保存在当前浏览器里，刷新后还在，换一台电脑就没有了。公开页面能看到提示，因为题目数据本身已经在这个公开仓库里。账号、会员等级和写入 `server/data/users.sqlite` 的记录只在下面的本地 API 里生效。
+
+本地网站读的是同一份 `db/question-bank.sqlite`，只读，不会改题目数据。注册、登录和做题记录写在 `server/data/users.sqlite`。
 
 页面包括首页、题目列表、题目详情、登录、注册、个人中心和做题记录。列表可以按题号、标题或 slug 搜索，并按难度、类别、标签筛选。页眉可以在 `leetcode.com` / `leetcode.cn` 和英文 / 中文之间切换。详情页用 Markdown 显示题干，并带示例和初始代码模板。
 

@@ -1,7 +1,7 @@
 /**
  * 认证上下文
  */
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { authApi } from '../api/client';
 import type { User, MembershipInfo } from '../types';
 
@@ -17,6 +17,23 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const staticSite = import.meta.env.VITE_STATIC === '1';
+
+const localVisitor: User = {
+  id: 0,
+  username: '访客',
+  email: '仅保存在当前浏览器',
+  created_at: '2026-01-01T00:00:00.000Z',
+  updated_at: '2026-01-01T00:00:00.000Z',
+  last_login_at: null,
+  login_count: 0,
+};
+
+const localMembership: MembershipInfo = {
+  isPremium: true,
+  hoursRemaining: 0,
+  loginsRemaining: 0,
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -29,6 +46,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const checkAuth = async () => {
+    if (staticSite) {
+      setUser(localVisitor);
+      setMembership(localMembership);
+      setIsLoading(false);
+      return;
+    }
     const token = localStorage.getItem('accessToken');
     if (!token) {
       setIsLoading(false);
@@ -50,6 +73,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (username: string, password: string) => {
+    if (staticSite) {
+      setUser(localVisitor);
+      setMembership(localMembership);
+      return;
+    }
     const response = await authApi.login({ username, password });
     if (response.data.success) {
       const { user: userData, tokens } = response.data.data;
@@ -62,6 +90,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (username: string, email: string, password: string) => {
+    if (staticSite) {
+      setUser(localVisitor);
+      setMembership(localMembership);
+      return;
+    }
     const response = await authApi.register({ username, email, password });
     if (response.data.success) {
       const { user: userData, tokens } = response.data.data;
@@ -77,6 +110,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
+    if (staticSite) {
+      setUser(localVisitor);
+      setMembership(localMembership);
+      return;
+    }
     const refreshToken = localStorage.getItem('refreshToken');
     if (refreshToken) {
       try {

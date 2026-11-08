@@ -46,7 +46,9 @@ export default function HomePage() {
       <section className="text-center py-16 bg-gradient-to-r from-[#1a1a2e] to-[#16213e] rounded-2xl text-white">
         <h1 className="text-5xl font-bold mb-4">LeetCode 题目库</h1>
         <p className="text-xl text-gray-300 mb-8">
-          本地查询 · 离线可用 · 完整题干
+          {import.meta.env.VITE_STATIC === '1'
+            ? '公开浏览 · 题干、示例与初始代码'
+            : '本地查询 · 离线可用 · 完整题干'}
         </p>
         
         {/* Search Bar */}

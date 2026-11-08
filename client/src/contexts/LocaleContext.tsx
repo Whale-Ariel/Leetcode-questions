@@ -1,7 +1,7 @@
 /**
  * 语言上下文
  */
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 
 type Locale = 'en' | 'zh-CN';
 type Site = 'leetcode.com' | 'leetcode.cn';

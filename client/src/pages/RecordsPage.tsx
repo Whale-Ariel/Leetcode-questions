@@ -1,7 +1,7 @@
 /**
  * 做题记录页
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { recordsApi } from '../api/client';
 import { useAuth } from '../contexts/AuthContext';

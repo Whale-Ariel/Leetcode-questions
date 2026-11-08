@@ -1,14 +1,14 @@
 /**
  * 题目列表页
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { problemsApi } from '../api/client';
 import { useLocale } from '../contexts/LocaleContext';
 import type { ProblemListItem, Tag, Category } from '../types';
 
 export default function ProblemsPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { locale, site } = useLocale();
   
   const [problems, setProblems] = useState<ProblemListItem[]>([]);
@@ -71,7 +71,7 @@ export default function ProblemsPage() {
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     setPage(1);
     loadProblems();
