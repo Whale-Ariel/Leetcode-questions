@@ -37,7 +37,7 @@ leetcode.com 上这份快照里的 4101 个 slug 都在库中。中文题来自 
 
 ## 用网页浏览
 
-公开页面：https://yumengwang63-eng.github.io/Leetcode-questions/
+公开页面：https://yumengwang63-eng.github.io/Leetcode-questions/pages
 
 这个地址由 GitHub Pages 提供，只包含静态页面。题目数据在构建时从 `db/question-bank.sqlite` 导出，页面直接读取这些 JSON。做题记录保存在当前浏览器里，刷新后还在，换一台电脑就没有了。公开页面能看到提示，因为题目数据本身已经在这个公开仓库里。账号、会员等级和写入 `server/data/users.sqlite` 的记录只在下面的本地 API 里生效。
 
