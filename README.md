@@ -1,6 +1,6 @@
 # LeetCode 题目信息数据库
 
-这是一个可以下载到本地直接查询的 LeetCode 题目信息库。数据在 SQLite 文件里，只用 Python 标准库就能查，不需要安装数据库服务器。
+这是一个可以下载到本地直接查询的 LeetCode 题目信息库。数据在 SQLite 文件里，不需要安装数据库服务器。可以用浏览器打开本地网站来浏览，也可以只用 Python 标准库在命令行里查。
 
 库里保存的是题目本身：题号、标题、难度、类别、题干、示例、约束、提示、初始代码模板、标签，以及每条内容来自哪个快照。不含题解、复杂度分析和答案实现。初始代码模板是 LeetCode 给出的空函数框架，不是解答。
 
@@ -13,7 +13,9 @@ cd Leetcode-questions
 
 克隆体积大约 90MB，主要来自 `db/question-bank.sqlite`。也可以在 GitHub 页面用 Code → Download ZIP。
 
-需要 Python 3.10 或更高版本。不需要 pip 安装第三方包。本机不需要单独安装 `sqlite3` 命令。
+命令行查询需要 Python 3.10 或更高版本。不需要 pip 安装第三方包，本机也不需要单独安装 `sqlite3` 命令。
+
+本地网站需要 Node.js 20.19 或更高版本。只使用命令行时不必安装 Node.js。
 
 ## 库里有什么
 
@@ -32,6 +34,44 @@ cd Leetcode-questions
 leetcode.com 上这份快照里的 4101 个 slug 都在库中。中文题来自 doocs 的中文 README，按 `leetcode.cn` 单独存放，没有自动并进国际站题目。对应关系在 `reports/cross-site-candidates.jsonl`，状态是待核实。
 
 更细的分类、难度和字段缺失统计见 `reports/coverage.json` 与 `reports/quality.json`。
+
+## 用网页浏览
+
+网站读的是同一份 `db/question-bank.sqlite`，只读，不会改题目数据。注册、登录和做题记录写在 `server/data/users.sqlite`。
+
+页面包括首页、题目列表、题目详情、登录、注册、个人中心和做题记录。列表可以按题号、标题或 slug 搜索，并按难度、类别、标签筛选。页眉可以在 `leetcode.com` / `leetcode.cn` 和英文 / 中文之间切换。详情页用 Markdown 显示题干，并带示例和初始代码模板。
+
+题干和示例无需登录。提示需要正式会员：注册满 24 小时，或登录满 10 次。在此之前，详情页不返回提示内容。
+
+在仓库根目录开两个终端。
+
+先启动 API（默认 `http://localhost:3000`）：
+
+```powershell
+cd server
+npm install
+npm run dev
+```
+
+再启动页面（默认 `http://localhost:5173`，并把 `/api` 转到上面的 API）：
+
+```powershell
+cd client
+npm install
+npm run dev
+```
+
+浏览器打开 http://localhost:5173 。
+
+可选环境变量，写在启动 API 的终端里：
+
+| 变量 | 默认值 | 含义 |
+| --- | --- | --- |
+| `PORT` | `3000` | API 端口 |
+| `CORS_ORIGIN` | `http://localhost:5173` | 允许的页面来源 |
+| `JWT_SECRET` | 代码内的开发用默认值 | 签发登录令牌的密钥。给别人用时请改成只有自己知道的长随机字符串 |
+
+生产构建可以在 `server` 里执行 `npm run build` 后 `npm start`，在 `client` 里执行 `npm run build`。构建出的页面需要自行把 `/api` 指到 API，开发服务器里的代理不会带进静态文件。
 
 ## 用命令查询
 
@@ -109,7 +149,7 @@ python -c "import sqlite3; c=sqlite3.connect(r'db/question-bank.sqlite'); print(
 ## 使用时要注意
 
 - 付费题在 leetcode-api 缓存里没有正文，这里没有再向 LeetCode 抓取会员内容。若 doocs 快照里已有题干，会作为 doocs 来源另存。
-- 中文站和国际站没有合并。查英文用 `--site leetcode.com --locale en`，查中文用 `--site leetcode.cn --locale zh-CN`。
+- 中文站和国际站没有合并。命令行查英文用 `--site leetcode.com --locale en`，查中文用 `--site leetcode.cn --locale zh-CN`。网页上用页眉的站点和语言切换，对应的是同一组参数。
 - 中文算法题如果没有可靠类别标签，`category` 为空。
 - 这三份快照里没有 LCP、面试题这类非数字题号。
 - 图片只保存原始 URL，没有把图片文件放进库里。
@@ -117,4 +157,4 @@ python -c "import sqlite3; c=sqlite3.connect(r'db/question-bank.sqlite'); print(
 
 ## 这个仓库不包含什么
 
-不包含三个来源仓库的原始克隆，也不包含重新抓取脚本所需的上游文件。因此克隆本仓库后可以直接查询，不能在本目录里把三份来源重新跑一遍导入。查询代码在 `scripts/qb/`。
+不包含三个来源仓库的原始克隆，也不包含重新抓取脚本所需的上游文件。因此克隆本仓库后可以直接查询，不能在本目录里把三份来源重新跑一遍导入。命令行查询代码在 `scripts/qb/`。网页在 `client/`，API 在 `server/`。
