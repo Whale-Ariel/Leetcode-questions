@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LeetCode 题库 · 本地浏览</title>
+  <link rel="stylesheet" href="css/styles.css?v=25">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/problems">◇ LeetCode 题库</a>
+    <nav class="nav">
+      <a href="#/problems">题库</a>
+      <a href="#/premium">Premium 会员题<span id="premium-count" class="nav-count"></span></a>
+      <a href="#/topics">高级专区</a>
+      <a href="#/stats">统计</a>
+      <a href="#/mine">我的</a>
+    </nav>
+    <div class="topbar-actions">
+      <span id="auth-area" class="auth-area"></span>
+      <select id="random-select" class="btn btn-select" aria-label="随机一题">
+        <option value="" selected>随机</option>
+        <option value="any">随机一题</option>
+        <option value="premium">随机 Premium</option>
+      </select>
+      <a class="btn" href="#/problems?daily=1">每日</a>
+      <button id="theme-toggle" class="btn" type="button" aria-label="切换深浅色">☾</button>
+    </div>
+  </header>
+  <main id="app" class="container">
+    <p class="placeholder">正在连接本地题库…</p>
+  </main>
+  <footer class="footer">
+    本地只读快照 · 数据来自公开快照，题目权利归原权利人 · 不含题解与答案 ·
+    <a class="footer-link" href="#/issues">数据质量</a> ·
+    <a class="footer-link" href="#/review">配对核实</a>
+  </footer>
+  <script src="vendor/highlight.min.js?v=25"></script>
+  <script src="vendor/scala.min.js?v=25"></script>
+  <script src="vendor/dart.min.js?v=25"></script>
+  <script src="vendor/erlang.min.js?v=25"></script>
+  <script src="vendor/elixir.min.js?v=25"></script>
+  <script src="vendor/lisp.min.js?v=25"></script>
+  <script type="module" src="js/app.js?v=25"></script>
+</body>
+</html>

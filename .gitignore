@@ -6,3 +6,8 @@ db/sample.sqlite
 db/fail-test.sqlite
 db/*.sqlite-wal
 db/*.sqlite-shm
+web/cache/
+db/users.sqlite
+dist/
+_serve.log
+_serve.err.log

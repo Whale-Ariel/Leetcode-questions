@@ -121,7 +121,7 @@ def _remove_db(path: Path) -> None:
             candidate.unlink()
 
 
-def run_all() -> None:
+def run_all(target_db: Path | None = None) -> None:
     print("manifest", flush=True)
     write_manifest()
     print("inventory", flush=True)
@@ -145,7 +145,7 @@ def run_all() -> None:
     write_json(REPORTS / "sample-acceptance.json", acceptance)
     if not acceptance["passed"]:
         raise SystemExit("sample acceptance failed; full import not started")
-    full_db = DB_DIR / "question-bank.sqlite"
+    full_db = target_db or (DB_DIR / "question-bank.sqlite")
     _remove_db(full_db)
     print("full dry-run", flush=True)
     dry = import_records(full_db, normalized_dir=NORMALIZED, dry_run=True, reports_dir=REPORTS)
@@ -223,6 +223,11 @@ def main() -> None:
     cov.add_argument("--db", required=True)
     bak = sub.add_parser("backup")
     bak.add_argument("--db", required=True)
+    serve = sub.add_parser("serve")
+    serve.add_argument("--db", default=str(DB_DIR / "question-bank.sqlite"))
+    serve.add_argument("--host", default="127.0.0.1")
+    serve.add_argument("--port", type=int, default=8000)
+    serve.add_argument("--open", action="store_true", help="open the browser")
     query = sub.add_parser("query")
     query.add_argument("--db", required=True)
     query.add_argument("--slug")
@@ -236,6 +241,10 @@ def main() -> None:
     query.add_argument("--issues", action="store_true")
     query.add_argument("--out")
     sub.add_parser("all")
+    upd = sub.add_parser("update", help="fetch upstream repos and rebuild the DB")
+    upd.add_argument("--db", default=str(DB_DIR / "question-bank.sqlite"))
+    upd.add_argument("--fetch-only", action="store_true")
+    upd.add_argument("--skip-fetch", action="store_true")
     mig = sub.add_parser("migrate")
     mig.add_argument("--db", required=True)
     args = parser.parse_args()
@@ -259,6 +268,9 @@ def main() -> None:
         print(json.dumps(write_coverage(Path(args.db)), ensure_ascii=False, indent=2))
     elif args.cmd == "backup":
         print(json.dumps(_backup(Path(args.db)), ensure_ascii=False, indent=2))
+    elif args.cmd == "serve":
+        from qb.server import main as serve_main
+        serve_main(Path(args.db), host=args.host, port=args.port, open_browser=args.open)
     elif args.cmd == "query":
         _query(args)
     elif args.cmd == "migrate":
@@ -267,6 +279,11 @@ def main() -> None:
         conn.close()
     elif args.cmd == "all":
         run_all()
+    elif args.cmd == "update":
+        from qb.update import main as update_main
+        update_main(["--db", args.db]
+                    + (["--fetch-only"] if args.fetch_only else [])
+                    + (["--skip-fetch"] if args.skip_fetch else []))
 
 
 if __name__ == "__main__":
